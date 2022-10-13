@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <com.yjh.myview.CircleView
@@ -16,14 +17,35 @@
         android:id="@+id/circleView" />
 
 
-        <com.yjh.myview.PieChart
-            android:layout_width="100dp"
-            android:layout_height="75dp"
-            app:showText="true"
-            android:background="@color/teal_200"
-            android:layout_margin="20dp"
-            android:padding="20dp"
-            app:labelPosition="left" />
+    <com.yjh.myview.PieChart
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        app:showText="true"
+        android:background="@color/teal_200"
+        android:layout_margin="20dp"
+        android:padding="20dp"
+        app:labelPosition="left" />
+
+    <TextView
+        android:id="@+id/tv_hello"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:textSize="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--必须在themes.xml更改为
+    <style name="Theme.YjhView" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge" >
+    shape的颜色才会生效-->
+    <Button
+        android:id="@+id/bt_rectangle"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:text="圆角按钮"
+        android:textColor="@color/cardview_light_background"
+        android:background="@drawable/rectangle"/>
 
 
 </LinearLayout>
