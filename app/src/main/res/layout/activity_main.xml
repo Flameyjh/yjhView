@@ -47,5 +47,23 @@
         android:textColor="@color/cardview_light_background"
         android:background="@drawable/rectangle"/>
 
+    <TextView
+        android:id="@+id/tv_underline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="测试一下文本下划线和点击事件"
+        android:textSize="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.yjh.myview.correction.MyEditText
+        android:id="@+id/tv_underline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="测试一下文本下划线和点击事件2"
+        android:textSize="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </LinearLayout>
