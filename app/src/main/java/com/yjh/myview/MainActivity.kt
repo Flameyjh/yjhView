@@ -1,5 +1,6 @@
 package com.yjh.myview
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Rect
@@ -11,15 +12,19 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextWatcher
 import android.text.style.UnderlineSpan
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.ss.android.ugc.aweme.sticker.text.correction.TextCorrectHelper
 import com.yjh.myview.correction.MyEditText
-import com.yjh.myview.correction.TextCorrectViewHandle
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private val mStartColor = Color.parseColor("#FF0000")
     private val mEndColor = Color.parseColor("#FFFF00")
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main) //1. 自定义view 2. shape
@@ -43,6 +49,17 @@ class MainActivity : AppCompatActivity() {
         //5. 输入框文字下划线和点击事件 方案2
         val textView: MyEditText = findViewById(R.id.tv_underline2)
         handleEditText2(textView)
+        textView.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(p0: View, event: MotionEvent): Boolean {
+                Log.i("yjhtext", "手势：触摸事件")
+                when (event.action and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_DOWN -> {
+                        Log.i("yjhtext", "手势：down")
+                    }
+                }
+                return true
+            }
+        })
     }
 
     //渐变Button
@@ -83,39 +100,34 @@ class MainActivity : AppCompatActivity() {
 
     //输入框文字下划线和点击事件 方案2
     private fun handleEditText2(textView: MyEditText) {
-
         //Layout要等TextView绘制完了才能够拿到Layout的对象。直接获取Layout值都是null
         Handler(Looper.getMainLooper()).postDelayed( {
-            spanableTextView(textView)
+            textView.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+                override fun afterTextChanged(s: Editable?) {
+                    spanableTextView(textView)
+                    textView.invalidate()
+                }
+            })
         }, 100)
     }
 
     private fun spanableTextView(textView: MyEditText) {
         //假设后端返回
-        val offsetList = listOf<Int>(2, 5, 7)
-
-        //画红线
-        textView.setTextCorrectSwitch(true)
-        textView.setErrorTextNum(offsetList.size)
-        textView.showIndexLine(true)
-        textView.showIndexRect(true)
-        for (offset in offsetList) { //利用index画UI
-            val floats = TextCorrectHelper.measureXY(textView, offset)
+        val offsetList = listOf<Int>(2, 3, 5)
+        //根据返回处理UI配置
+        textView.errorTextData.switch = true
+        textView.errorTextData.errorTextNum = offsetList.size
+        for (index in offsetList.indices) {
+            val floats = TextCorrectHelper.measureXY(textView, offsetList[index])
             val rect = RectF(floats?.get(0) ?: 0f, floats?.get(1) ?: 0f, floats?.get(2) ?: 0f, floats?.get(3) ?: 0f)
-            textView.setTextRectPosition(rect)
+            textView.errorTextData.textRect?.add(rect)
         }
-
         //画气泡
-
-
-
+        textView.invalidate()
     }
 
-    //参考
-//        val spanableInfo = SpannableString("这是一个测试文本，点击我看看！")
-//        val span = MyClickableSpan(2, 3, onClickListener)
-//        val lines = mutableListOf<UnderLineOptions>()
-//        val lineOptions = UnderLineOptions(span.mStart, span.mEnd, span)
-//        lines.add(lineOptions)
-//        TextCorrectionHelper.setTextViewLines(textView, lines)
 }

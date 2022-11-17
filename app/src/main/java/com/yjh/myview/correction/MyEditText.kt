@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 
 class MyEditText(context: Context, attrs: AttributeSet): androidx.appcompat.widget.AppCompatEditText(context, attrs) {
     private val mPaintLine = Paint().apply {
@@ -15,53 +15,30 @@ class MyEditText(context: Context, attrs: AttributeSet): androidx.appcompat.widg
         color = Color.RED
         alpha = 100
     }
-
-    private var mSwitch: Boolean = false //文本纠错开关
-    private var mShowIndexLine = false //是否显示下划线
-    private var mShowIndexRect = false //是否显示错别字rect
-    private var mTextRect = RectF() //错别字rect
-    private var mErrorTextNum = 0 //错别字总数 (看算法返回) todo yjh 多个错别字最后再做吧
-
-    /** 设置纠错开关  */
-    fun setTextCorrectSwitch(turnOn: Boolean) {
-        mSwitch = turnOn
-    }
-
-    /** 设置错别字总数  */
-    fun setErrorTextNum(num: Int) {
-        mErrorTextNum = num
-    }
-
-    /** 设置对应Index的下划线的位置  */
-    fun setTextRectPosition(rect: RectF) {
-        mTextRect.set(rect)
-    }
-
-    /** 设置对应Index的下划线是否显示  */
-    fun showIndexLine(show: Boolean) {
-        mShowIndexLine = show
-    }
-
-    /** 设置对应Index的rect是否显示  */
-    fun showIndexRect(show: Boolean) {
-        mShowIndexRect = show
-    }
+    var errorTextData = ErrorTextData()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        //画红色下划线
-        if (mShowIndexLine) {
-            canvas.drawRect(
-                mTextRect.left,
-                mTextRect.bottom,
-                mTextRect.right,
-                mTextRect.bottom + 8f,
-                mPaintLine
-            )
-        }
-        //画红色rect
-        if (mShowIndexRect) {
-            canvas.drawRect(mTextRect, mPaintRect)
+        Log.i("yjh", "画画啦")
+        //根据配置绘制UI
+        if (errorTextData.switch) {
+            //画红色下划线
+            for (index in 0 until errorTextData.errorTextNum) {
+                if (errorTextData.textRect?.get(index) != null) {
+                    canvas.drawRect(
+                        errorTextData.textRect!![index].left,
+                        errorTextData.textRect!![index].bottom,
+                        errorTextData.textRect!![index].right,
+                        errorTextData.textRect!![index].bottom + 8f,
+                        mPaintLine
+                    )
+                }
+                //画红色rect
+                if (errorTextData.textRect?.get(index) != null) {
+                    canvas.drawRect(errorTextData.textRect!![index], mPaintRect)
+                }
+                Log.i("yjh", "画红线 index=${index}")
+            }
         }
     }
 
