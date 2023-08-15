@@ -1,10 +1,11 @@
-package com.yjh.myview
+package com.yjh.myview.customview
 
 import android.content.Context
 import android.graphics.*
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.util.AttributeSet
 import android.view.View
+import com.yjh.myview.R.styleable
 
 class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
@@ -27,12 +28,12 @@ class PieChart(context: Context, attrs: AttributeSet) : View(context, attrs) {
     init {
         context.theme.obtainStyledAttributes(
             attrs,
-            R.styleable.PieChart,
+            styleable.PieChart,
             0, 0).apply {
 
             try {
-                mShowText = getBoolean(R.styleable.PieChart_showText, false)
-                textPos = getInteger(R.styleable.PieChart_labelPosition, 0)
+                mShowText = getBoolean(styleable.PieChart_showText, false)
+                textPos = getInteger(styleable.PieChart_labelPosition, 0)
             } finally {
                 recycle()
             }

@@ -1,4 +1,4 @@
-package com.yjh.myview
+package com.yjh.myview.customview
 
 import android.content.Context
 import android.graphics.Canvas
@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import com.yjh.myview.R.styleable
 import java.lang.Math.min
 
 class CircleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
@@ -16,11 +17,11 @@ class CircleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     init {
         context.theme.obtainStyledAttributes(
             attrs,
-            R.styleable.CircleView,
+            styleable.CircleView,
             0, 0).apply {
 
             try {
-                mColor = getColor(R.styleable.CircleView_circle_color, Color.RED)
+                mColor = getColor(styleable.CircleView_circle_color, Color.RED)
             } finally {
                 recycle()
             }

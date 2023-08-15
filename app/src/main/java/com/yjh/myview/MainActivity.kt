@@ -18,8 +18,10 @@ import android.text.Spanned
 import android.text.TextWatcher
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -47,17 +49,50 @@ class MainActivity : AppCompatActivity() {
         handleEditText()
 
         //5. 输入框文字下划线和点击事件 方案2
-        val textView: MyEditText = findViewById(R.id.tv_underline2)
-        handleEditText2(textView)
-        textView.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(p0: View, event: MotionEvent): Boolean {
-                Log.i("yjhtext", "手势：触摸事件")
+        handleEditText2()
+
+        //6. Android事件处理机制: 事件传播顺序: 监听器—>view组件的回调方法—>Activity的回调方法,返回值false继续传播，true终止传播
+        onHandleAction()
+
+        //7. 响应系统设置的事件(Configuration类)
+
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        super.onKeyDown(keyCode, event)
+        Log.i("onKey事件传播", "Activity的onKeyDown方法被调用")
+        return false
+    }
+
+    //Android事件处理机制: 事件传播顺序
+    @SuppressLint("ClickableViewAccessibility")
+    private fun onHandleAction() {
+        val btKeyDown: Button = findViewById(R.id.bt_key_down)
+        btKeyDown.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if (event?.action == KeyEvent.ACTION_DOWN) {
+                    Log.i("onKey事件传播", "监听器的onKeyDown方法被调用")
+                }
+                return false
+            }
+        })
+        btKeyDown.setOnClickListener{
+            Log.i("click事件传播", "监听器的setOnClickListener方法被调用")
+        }
+        btKeyDown.setOnTouchListener(object : OnTouchListener {
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
                 when (event.action and MotionEvent.ACTION_MASK) {
                     MotionEvent.ACTION_DOWN -> {
-                        Log.i("yjhtext", "手势：down")
+                        Log.i("onTouch事件传播", "监听器的ACTION_DOWN方法被调用")
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        Log.i("onTouch事件传播", "监听器的ACTION_MOVE方法被调用")
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        Log.i("onTouch事件传播", "监听器的ACTION_UP方法被调用")
                     }
                 }
-                return true
+                return false //返回false不消费，继续传递；返回true消费，setOnClickListener不会被调用
             }
         })
     }
@@ -71,7 +106,6 @@ class MainActivity : AppCompatActivity() {
         val gradientDrawable = btRectangle.background as GradientDrawable
         gradientDrawable.colors = intArrayOf(mStartColor, mEndColor)
     }
-
 
     //渐变文字
     private fun gradientText() {
@@ -99,7 +133,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     //输入框文字下划线和点击事件 方案2
-    private fun handleEditText2(textView: MyEditText) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun handleEditText2() {
+        val textView: MyEditText = findViewById(R.id.tv_underline2)
+        textView.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(p0: View, event: MotionEvent): Boolean {
+                Log.i("yjhtext", "手势：触摸事件")
+                when (event.action and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_DOWN -> {
+                        Log.i("yjhtext", "手势：down")
+                    }
+                }
+                return true
+            }
+        })
         //Layout要等TextView绘制完了才能够拿到Layout的对象。直接获取Layout值都是null
         Handler(Looper.getMainLooper()).postDelayed( {
             textView.addTextChangedListener(object : TextWatcher {

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <com.yjh.myview.CircleView
+    <com.yjh.myview.customview.CircleView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#000000"
@@ -17,7 +17,7 @@
         android:id="@+id/circleView" />
 
 
-    <com.yjh.myview.PieChart
+    <com.yjh.myview.customview.PieChart
         android:layout_width="100dp"
         android:layout_height="75dp"
         app:showText="true"
@@ -61,6 +61,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="测试一下文本下划线和点击事件2"
+        android:textSize="18dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.yjh.myview.customview.MyButton
+        android:id="@+id/bt_key_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自定义按钮"
         android:textSize="18dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
